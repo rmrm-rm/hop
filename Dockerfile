@@ -1,0 +1,42 @@
+FROM --platform=linux/amd64 ubuntu:20.04
+
+# tzdata install 時に timezone 聞かれないようにするためのおまじない
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    curl \
+    unzip \
+    clang \
+    cmake \
+    ninja-build \
+    pkg-config \
+    libgtk-3-dev \
+    language-pack-ja \
+    android-sdk \
+    openjdk-17-jdk \
+    wget && \
+    rm -rf /var/lib/apt/lists/* && \
+    update-locale LANG=ja_JP.UTF-8
+RUN git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter
+ENV PATH="/usr/local/flutter/bin:${PATH}"
+
+# Flutter セットアップ実行
+RUN flutter doctor --android-licenses || true
+RUN flutter doctor
+
+# Android SDK
+RUN wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && \
+    unzip commandlinetools-linux-11076708_latest.zip && \
+    mkdir -p ~/android-sdk/cmdline-tools/latest && \
+    mv /cmdline-tools/* ~/android-sdk/cmdline-tools/latest/
+ENV JAVA_HOME=/usr
+ENV PATH=$JAVA_HOME/bin:$PATH
+ENV ANDROID_HOME=/root/android-sdk
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools/bin
+
+RUN yes | sdkmanager "cmdline-tools;latest" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+RUN yes | flutter doctor --android-licenses
+
+CMD ["flutter", "--version"]

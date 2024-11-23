@@ -1,0 +1,9 @@
+{
+    "name": "hop",
+    "dockerFile": "../Dockerfile",
+    "runArgs": ["--name", "hop"],
+    "forwardPorts": [5554, 5555, 5037]
+    // "mounts": [
+    //   "source=${localEnv:HOME}/.android/avd,target=/root/.android/avd,type=bind"  // Android AVDディレクトリをマウント
+    // ]
+  }
