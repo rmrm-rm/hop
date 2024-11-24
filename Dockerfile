@@ -29,14 +29,13 @@ RUN flutter doctor
 # Android SDK
 RUN wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && \
     unzip commandlinetools-linux-11076708_latest.zip && \
-    mkdir -p ~/android-sdk/cmdline-tools/latest && \
-    mv /cmdline-tools/* ~/android-sdk/cmdline-tools/latest/
+    mkdir -p /usr/lib/android-sdk/cmdline-tools/latest && \
+    mv /cmdline-tools/* /usr/lib/android-sdk/cmdline-tools/latest/
 ENV JAVA_HOME=/usr
 ENV PATH=$JAVA_HOME/bin:$PATH
-ENV ANDROID_HOME=/root/android-sdk
+ENV ANDROID_HOME=/usr/lib/android-sdk
 ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools/bin
 
-RUN yes | sdkmanager "cmdline-tools;latest" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+RUN yes | sdkmanager "cmdline-tools;latest" "platform-tools" "platforms;android-34" "build-tools;33.0.1"
 RUN yes | flutter doctor --android-licenses
-
 CMD ["flutter", "--version"]
