@@ -36,6 +36,8 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 ENV ANDROID_HOME=/usr/lib/android-sdk
 ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools/bin
 
-RUN yes | sdkmanager "cmdline-tools;latest" "platform-tools" "platforms;android-34" "build-tools;33.0.1"
+# 下記は android-sdk がデフォルトで入れるのでクリーンしてからインストール.
+RUN rm -rf /usr/lib/android-sdk/build-tools /usr/lib/android-sdk/platforms
+RUN yes | sdkmanager "platforms;android-34" "build-tools;33.0.1"
 RUN yes | flutter doctor --android-licenses
 CMD ["flutter", "--version"]
